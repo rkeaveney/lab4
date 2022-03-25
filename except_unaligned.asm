@@ -1,0 +1,3 @@
+	.ORIG x1A00
+DONE	TRAP x25
+	.END

@@ -212,6 +212,11 @@ void cycle() {
   drive_bus();
   latch_datapath_values();
 
+  if (CYCLE_COUNT == 299)
+  {
+      
+  }
+
   CURRENT_LATCHES = NEXT_LATCHES;
 
   CYCLE_COUNT++;
