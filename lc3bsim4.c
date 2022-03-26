@@ -141,6 +141,7 @@ int MEMORY[WORDS_IN_MEM][2];
 
 int RUN_BIT;	/* run bit */
 int BUS;	/* value of the bus */
+int TIMER_INT_FLAG;
 
 typedef struct System_Latches_Struct{
 
@@ -166,7 +167,13 @@ int STATE_NUMBER; /* Current State Number - Provided for debugging */
 /* For lab 4 */
 int INTV; /* Interrupt vector register */
 int EXCV; /* Exception vector register */
+int VECTOR;
 int SSP; /* Initial value of system stack pointer */
+int PROTECTED;
+int UNALIGNED;
+int PSR;
+int SAVED_USR;
+int SAVED_SSR;
 /* MODIFY: You may add system latches that are required by your implementation */
 
 } System_Latches;
@@ -214,7 +221,7 @@ void cycle() {
 
   if (CYCLE_COUNT == 299)
   {
-      
+      TIMER_INT_FLAG = 1;
   }
 
   CURRENT_LATCHES = NEXT_LATCHES;
@@ -529,6 +536,7 @@ void initialize(char *argv[], int num_prog_files) {
     CURRENT_LATCHES.STATE_NUMBER = INITIAL_STATE_NUMBER;
     memcpy(CURRENT_LATCHES.MICROINSTRUCTION, CONTROL_STORE[INITIAL_STATE_NUMBER], sizeof(int)*CONTROL_STORE_BITS);
     CURRENT_LATCHES.SSP = 0x3000; /* Initial value of system stack pointer */
+    CURRENT_LATCHES.PSR = 0x8001; // User mode, Z=1
 
     NEXT_LATCHES = CURRENT_LATCHES;
 
@@ -617,6 +625,11 @@ void eval_micro_sequencer()
         for (int i =0; i<35; i++){
             NEXT_LATCHES.MICROINSTRUCTION[i] = CONTROL_STORE[NEXT_LATCHES.STATE_NUMBER][i];
         }
+
+        if (CURRENT_LATCHES.STATE_NUMBER == 10 || CURRENT_LATCHES.STATE_NUMBER == 11)
+            NEXT_LATCHES.STATE_NUMBER = 61;
+            NEXT_LATCHES.EXCV = 4;
+            NEXT_LATCHES.VECTOR = 4;
     }
     
     // If IRD=1 (i.e. if state = 32)
@@ -627,6 +640,8 @@ void eval_micro_sequencer()
             NEXT_LATCHES.MICROINSTRUCTION[i] = CONTROL_STORE[NEXT_LATCHES.STATE_NUMBER][i];
         }
     }
+
+    
 }
 
 

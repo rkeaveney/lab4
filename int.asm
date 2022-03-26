@@ -7,7 +7,7 @@
 	LDW R1, R0, #0
 	ADD R1, R1, #1
 	STW R1, R0, #0
-	LDW R0, R6, #0
+	LDW R1, R6, #0
 	ADD R6, R6, #1
 	LDW R0, R6, #0
 	ADD R6, R6, #1
